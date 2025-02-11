@@ -84,15 +84,15 @@
 
         const mobile = document.getElementById('mobile').value;
         const apiEndpoint = "https://script.google.com/macros/s/AKfycbyYVRQEC6AsfR86f9m9MK9dY1iXftiTVyl_xmwIZvD5jxW2xVsLpKzaCKOtQN1evbf7/exec";
-
+        
         try {
             // Step 1: Get the last participant number from Google Sheets
             const lastParticipantId = await getLastParticipantId(apiEndpoint);
             const participantId = lastParticipantId + 1; // Increment by 1 for new participant
 
             // Step 2: Choose the form based on even/odd ID
-            const tallyForm2 = "https://tally.so/r/YOUR_FORM_2_ID";
-            const tallyForm3 = "https://tally.so/r/YOUR_FORM_3_ID";
+            const tallyForm2 = "https://tally.so/r/mVb2V6";
+            const tallyForm3 = "https://tally.so/r/nGq8Je";
             const nextForm = (participantId % 2 === 0) ? tallyForm2 : tallyForm3;
 
             // Step 3: Store the new participant ID and mobile number in Google Sheets
@@ -106,18 +106,21 @@
     });
 
     // Function to get the last participant ID from Google Sheets
-    async function getLastParticipantId(apiEndpoint) {
-        const response = await fetch(apiEndpoint + "?action=getLastId");
+    async function getLastParticipantId(apiUrl) {
+        const response = await fetch(`${apiUrl}?action=getLastId`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
         const data = await response.json();
         return data.lastParticipantId || 0; // Default to 0 if no participants yet
     }
 
     // Function to store participant data in Google Sheets
-    async function storeDataInGoogleSheets(apiEndpoint, participantId, mobile) {
-        await fetch(apiEndpoint, {
+    async function storeDataInGoogleSheets(apiUrl, participantId, mobile) {
+        await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: "storeData", participantId: participantId, mobile: mobile })
+            body: JSON.stringify({ participantId: participantId, mobile: mobile })
         });
     }
 </script>
