@@ -83,20 +83,20 @@
         event.preventDefault();
 
         const mobile = document.getElementById('mobile').value;
-        const googleSheetsAPI = "https://script.google.com/macros/s/AKfycbyYVRQEC6AsfR86f9m9MK9dY1iXftiTVyl_xmwIZvD5jxW2xVsLpKzaCKOtQN1evbf7/exec";
+        const apiEndpoint = "https://script.google.com/macros/s/AKfycbyYVRQEC6AsfR86f9m9MK9dY1iXftiTVyl_xmwIZvD5jxW2xVsLpKzaCKOtQN1evbf7/exec";
 
         try {
             // Step 1: Get the last participant number from Google Sheets
-            const lastParticipantId = await getLastParticipantId(googleSheetsAPI);
+            const lastParticipantId = await getLastParticipantId(apiEndpoint);
             const participantId = lastParticipantId + 1; // Increment by 1 for new participant
 
             // Step 2: Choose the form based on even/odd ID
-            const tallyForm2 = "https://tally.so/r/nGq8Je";
-            const tallyForm3 = "https://tally.so/r/mVb2V6";
+            const tallyForm2 = "https://tally.so/r/YOUR_FORM_2_ID";
+            const tallyForm3 = "https://tally.so/r/YOUR_FORM_3_ID";
             const nextForm = (participantId % 2 === 0) ? tallyForm2 : tallyForm3;
 
             // Step 3: Store the new participant ID and mobile number in Google Sheets
-            await storeDataInGoogleSheets(googleSheetsAPI, participantId, mobile);
+            await storeDataInGoogleSheets(apiEndpoint, participantId, mobile);
 
             // Step 4: Redirect to Tally form with pre-filled fields
             window.location.href = `${nextForm}?participantId=${participantId}&mobile=${encodeURIComponent(mobile)}`;
@@ -106,18 +106,18 @@
     });
 
     // Function to get the last participant ID from Google Sheets
-    async function getLastParticipantId(apiUrl) {
-        const response = await fetch(apiUrl);
+    async function getLastParticipantId(apiEndpoint) {
+        const response = await fetch(apiEndpoint + "?action=getLastId");
         const data = await response.json();
         return data.lastParticipantId || 0; // Default to 0 if no participants yet
     }
 
     // Function to store participant data in Google Sheets
-    async function storeDataInGoogleSheets(apiUrl, participantId, mobile) {
-        await fetch(apiUrl, {
+    async function storeDataInGoogleSheets(apiEndpoint, participantId, mobile) {
+        await fetch(apiEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ participantId: participantId, mobile: mobile })
+            body: JSON.stringify({ action: "storeData", participantId: participantId, mobile: mobile })
         });
     }
 </script>
