@@ -1,39 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Next Step - Climate Study</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thesis Experiment on Group Interactions</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #bb86fc;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        #tally-form {
+            margin-bottom: 20px;
+            width: 80%;
+            max-width: 800px;
+            height: 500px;
+        }
+
+        .styled-button {
+            background-color: #bb86fc;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-  <h1>Next Step</h1>
-  <p>We received your data. Processing...</p>
 
-  <script>
-    function getURLParameters() {
-      var params = {};
-      var search = location.search.slice(1);
-      if (search) {
-        search.split('&').forEach(function(part) {
-          var item = part.split('=');
-          params[item[0]] = decodeURIComponent(item[1] || "");
-        });
-      }
-      return params;
-    }
+    <h1>Climate Study</h1>
+    <p>Thank you for your interest in our climate change study. Please fill out the form below. After completing the form, you will be redirected.</p>
 
-    window.onload = function() {
-      var urlParams = getURLParameters();
+    <!-- Placeholder Tally form -->
+    <iframe id="tally-form" src="" frameborder="0"></iframe>
 
-      var participant_number = urlParams.participant_number;
-      var positive = urlParams.positive;
-      var negative = urlParams.negative;
+    <script>
+        // ✅ Function to extract parameters from the URL
+        function getURLParameters() {
+            var params = {};
+            var search = location.search.slice(1);
+            if (search) {
+                search.split('&').forEach(function(part) {
+                    var item = part.split('=');
+                    params[item[0]] = decodeURIComponent(item[1] || '');
+                });
+            }
+            return params;
+        }
 
-      console.log("Received in 1.5form.html:");
-      console.log("Participant Number:", participant_number);
-      console.log("Positive:", positive);
-      console.log("Negative:", negative);
+        // ✅ Extract parameters on page load
+        window.onload = function() {
+            var urlParams = getURLParameters();
 
-      // You can now use these values for any further processing
-    };
-  </script>
+            var participantId = urlParams.participantId;
+            var mobile = urlParams.mobile;
+            var condition = participantId % 2 === 0 ? "positive" : "negative";
+
+            console.log("🔢 Participant ID:", participantId);
+            console.log("📱 Mobile:", mobile);
+            console.log("🟢 Condition:", condition);
+
+            // ✅ Assign different forms based on participant ID (even/odd)
+            var positiveForm = "https://tally.so/r/mVb2V6"; // Positive condition
+            var negativeForm = "https://tally.so/r/nGq8Je"; // Negative condition
+            var selectedForm = (condition === "positive") ? positiveForm : negativeForm;
+
+            // ✅ Update the iframe with the correct form URL
+            document.getElementById('tally-form').src = `${selectedForm}?participantId=${participantId}&mobile=${encodeURIComponent(mobile)}`;
+        };
+    </script>
+
 </body>
 </html>
