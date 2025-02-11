@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Thank You - Additional Information</title>
+</head>
+<body>
+  <h1>Thank You!</h1>
+  <p>Please enter your mobile number below to proceed:</p>
+  <form id="additionalInfoForm">
+    <label for="mobile">Mobile Number:</label>
+    <input type="tel" id="mobile" name="mobile" required><br><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    document.getElementById('additionalInfoForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const mobile = document.getElementById('mobile').value;
+
+      // Generate a unique participant ID (simple example, improve for real use)
+      const participantId = generateUniqueId();
+
+      // Store data in Google Sheets (see code below)
+      storeDataInGoogleSheets(participantId, mobile)
+        .then(() => {
+          const formNumber = (participantId % 2 === 0) ? 2 : 3;
+          window.location.href = `form${formNumber}.html?id=${participantId}`;
+        });
+    });
+
+    // Simple Unique ID Generator (Improve this in a real application)
+    function generateUniqueId() {
+      return Math.floor(Math.random() * 1000000); // Not truly unique, but good enough for example
+    }
+
+    // Google Sheets API Interaction (See detailed code in previous response)
+    async function storeDataInGoogleSheets(participantId, mobile) {
+      // **REPLACE WITH YOUR API ENDPOINT/CODE (See previous response)**
+      const response = await fetch('YOUR_GOOGLE_SHEETS_API_ENDPOINT', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ participantId: participantId, mobile: mobile })
+      });
+      await response.json();
+    }
+  </script>
+</body>
+</html>
