@@ -105,37 +105,42 @@
         }
     });
 
-    // Function to get the last participant ID from Google Sheets
-  function getLastParticipantId() {
-    fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?action=getLastId", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then(data => {
-      if (data.error) {
-        console.error("Error from server:", data.error);
-      } else {
-        console.log("Last Participant ID:", data.lastParticipantId);
-        document.getElementById("participantId").value = data.lastParticipantId + 1;
-      }
-    })
-    .catch(error => console.error("Error fetching last participant ID:", error));
-  }
+    // ✅ Function to get the last participant ID from Google Sheets
+    async function getLastParticipantId(apiEndpoint) {
+        try {
+            const response = await fetch(`${apiEndpoint}?action=getLastId`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" }
+            });
 
-  // Call this function when the page loads
-  window.onload = function() {
-    getLastParticipantId();
-  };
+            if (!response.ok) throw new Error("Network response was not ok");
+
+            const data = await response.json();
+            return data.lastParticipantId || 0; // Return 0 if no participant found
+        } catch (error) {
+            console.error("Error fetching last participant ID:", error);
+            return 0;
+        }
+    }
+
+    // ✅ Function to store participant data in Google Sheets
+    async function storeDataInGoogleSheets(apiEndpoint, participantId, mobile) {
+        try {
+            const response = await fetch(apiEndpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ participantId, mobile })
+            });
+
+            if (!response.ok) throw new Error("Failed to save data");
+
+            const result = await response.json();
+            console.log("Data saved:", result);
+        } catch (error) {
+            console.error("Error storing data:", error);
+        }
+    }
 </script>
-
 
 </body>
 </html>
