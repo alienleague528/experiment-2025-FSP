@@ -106,24 +106,36 @@
     });
 
     // Function to get the last participant ID from Google Sheets
-    async function getLastParticipantId(apiUrl) {
-        const response = await fetch(`${apiUrl}?action=getLastId`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        const data = await response.json();
-        return data.lastParticipantId || 0; // Default to 0 if no participants yet
-    }
+  function getLastParticipantId() {
+    fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?action=getLastId", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.error) {
+        console.error("Error from server:", data.error);
+      } else {
+        console.log("Last Participant ID:", data.lastParticipantId);
+        document.getElementById("participantId").value = data.lastParticipantId + 1;
+      }
+    })
+    .catch(error => console.error("Error fetching last participant ID:", error));
+  }
 
-    // Function to store participant data in Google Sheets
-    async function storeDataInGoogleSheets(apiUrl, participantId, mobile) {
-        await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ participantId: participantId, mobile: mobile })
-        });
-    }
+  // Call this function when the page loads
+  window.onload = function() {
+    getLastParticipantId();
+  };
 </script>
+
 
 </body>
 </html>
