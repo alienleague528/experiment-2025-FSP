@@ -79,43 +79,14 @@
     </form>
 
 <script>
-    document.getElementById('additionalInfoForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-
-        const mobile = document.getElementById('mobile').value;
-        const apiEndpoint = "https://script.google.com/macros/s/AKfycbxZGCvszzP9rsvtVh-ulqAfE_sQx1GJ5FPAZhcS1uRkkVsfSYDs0zRAvH_K3j0sprCF/exec"; 
-
-        try {
-            console.log("Fetching last participant ID...");
-            
-            // Step 1: Get the last participant ID from Google Sheets
-            const lastParticipantId = await getLastParticipantId(apiEndpoint);
-            console.log("✅ Last Participant ID:", lastParticipantId);
-            
-            const participantId = lastParticipantId + 1; 
-            console.log("✅ New Participant ID (Incremented):", participantId); 
-
-            // Step 2: Choose the correct form
-            const tallyForm2 = "https://tally.so/r/mVb2V6";
-            const tallyForm3 = "https://tally.so/r/nGq8Je";
-            const nextForm = (participantId % 2 === 0) ? tallyForm2 : tallyForm3;
-            console.log("✅ Redirecting to:", nextForm);
-
-            // Step 3: Store the new participant ID and mobile number in Google Sheets
-            await storeDataInGoogleSheets(apiEndpoint, participantId, mobile);
-            console.log("✅ Data stored successfully!");
-
-            // Step 4: Redirect to Tally form
-            window.location.href = `${nextForm}?participantId=${participantId}&mobile=${encodeURIComponent(mobile)}`;
-        } catch (error) {
-            console.error("❌ Error processing form:", error);
-        }
-    });
-
-    // ✅ Function to get the last participant ID from Google Sheets
     async function getLastParticipantId(apiEndpoint) {
         try {
-            const response = await fetch(`${apiEndpoint}?action=getLastId`, {
+            console.log("Fetching last participant ID...");
+
+            const url = `${apiEndpoint}?action=getLastId`; // Ensure action is passed
+            console.log("Requesting:", url);
+
+            const response = await fetch(url, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" }
             });
@@ -124,31 +95,15 @@
 
             const data = await response.json();
             console.log("✅ API Response:", data);
-            return Number(data.lastParticipantId) || 0; 
+
+            return Number(data.lastParticipantId) || 0;
         } catch (error) {
             console.error("❌ Error fetching last participant ID:", error);
             return 0;
         }
     }
-
-    // ✅ Function to store participant data in Google Sheets
-    async function storeDataInGoogleSheets(apiEndpoint, participantId, mobile) {
-        try {
-            const response = await fetch(apiEndpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ participantId, mobile })
-            });
-
-            if (!response.ok) throw new Error("❌ Failed to save data");
-
-            const result = await response.json();
-            console.log("✅ Data saved:", result);
-        } catch (error) {
-            console.error("❌ Error storing data:", error);
-        }
-    }
 </script>
+
 
 
 </body>
