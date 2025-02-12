@@ -48,42 +48,15 @@
 <body>
 
     <h1>Climate Study</h1>
-    <p>Thank you for your interest in our climate change study. Click the button below to proceed to the survey.</p>
+    <p>Thank you for your interest in our climate change study. Click the button below to proceed.</p>
 
-    <!-- Button to open the Tally form -->
-    <a id="tally-link" href="#" target="_blank" class="styled-button">Open Survey</a>
+    <!-- Redirect button -->
+    <button id="start-button" class="styled-button">Start</button>
 
     <script>
-        function getURLParameters() {
-            let params = {};
-            let search = location.search.slice(1);
-            if (search) {
-                search.split('&').forEach(part => {
-                    let item = part.split('=');
-                    params[item[0]] = decodeURIComponent(item[1] || '');
-                });
-            }
-            return params;
-        }
-
-        window.onload = function() {
-            let urlParams = getURLParameters();
-
-            // Ensure participantId and mobile are always defined
-            let participantId = urlParams.participantId || "MISSING";
-            let mobile = urlParams.mobile || "MISSING";
-
-            if (participantId === "MISSING") {
-                alert("❌ Error: Missing Participant ID. Please check the link.");
-                return;
-            }
-
-            // ✅ Directly open form1,5.html (let the form handle conditions)
-            let formUrl = `form1,5.html?participantId=${participantId}&mobile=${encodeURIComponent(mobile)}`;
-
-            // ✅ Update button link
-            document.getElementById("tally-link").href = formUrl;
-        };
+        document.getElementById("start-button").addEventListener("click", function () {
+            window.location.href = "form1.html";
+        });
     </script>
 
 </body>
