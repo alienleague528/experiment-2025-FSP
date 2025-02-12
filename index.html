@@ -3,60 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thesis Experiment on Group Interactions</title>
+    <title>Participant Information</title>
     <style>
         body {
             background-color: #121212;
             color: #ffffff;
             font-family: sans-serif;
-            margin: 0;
-            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        form {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
         }
 
-        h1 {
-            color: #bb86fc;
-            margin-bottom: 20px;
+        label, input {
+            font-size: 1.2em;
+            margin: 10px 0;
         }
 
-        p {
-            font-size: 18px;
-            margin-bottom: 30px;
-            text-align: center;
-            padding: 0 20px;
-        }
-
-        .styled-button {
-            background-color: #bb86fc;
-            border: none;
+        button {
+            background-color: #1DB954;
             color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            border-radius: 4px;
-            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #1AA34A;
         }
     </style>
 </head>
 <body>
 
-    <h1>Climate Study</h1>
-    <p>Thank you for your interest in our climate change study. Click the button below to proceed.</p>
+    <h1>Step 1: Enter Your Information</h1>
 
-    <!-- Redirect button -->
-    <button id="start-button" class="styled-button">Start</button>
+    <form id="participantForm">
+        <label for="mobile">Mobile Number:</label>
+        <input type="tel" id="mobile" name="mobile" required>
+        <button type="submit">Submit</button>
+    </form>
 
     <script>
-        document.getElementById("start-button").addEventListener("click", function () {
-            window.location.href = "form1.html";
+        const apiEndpoint = "https://script.google.com/macros/s/AKfycbxZGCvszzP9rsvtVh-ulqAfE_sQx1GJ5FPAZhcS1uRkkVsfSYDs0zRAvH_K3j0sprCF/exec?action=getLastId";
+
+        document.getElementById('participantForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const mobile = document.getElementById('mobile').value;
+            if (!mobile) {
+                alert("❌ Please enter your mobile number.");
+                return;
+            }
+
+            try {
+                console.log("📢 Getting last participant ID...");
+                const lastParticipantId = await getLastParticipantId(apiEndpoint);
+                const participantId = lastParticipantId + 1;
+                console.log(`🔢 Assigned Participant ID: ${participantId}`);
+
+                await storeDataInGoogleSheets(apiEndpoint, participantId, mobile);
+
+                // ✅ Store data in sessionStorage
+                sessionStorage.setItem("participantId", participantId);
+                sessionStorage.setItem("mobile", mobile);
+
+                // ✅ Redirect to Form 1 (Tally Form)
+                window.location.href = `https://tally.so/r/wd8GjV?returnUrl=form1,5.html`;
+            } catch (error) {
+                console.error("❌ Error:", error);
+            }
         });
+
+        async function getLastParticipantId(apiEndpoint) {
+            try {
+                const response = await fetch(apiEndpoint, { method: "GET", headers: { "Content-Type": "application/json" } });
+                const data = await response.json();
+                return Number(data.lastParticipantId) || 0;
+            } catch (error) {
+                console.error("❌ Error fetching last participant ID:", error);
+                return 0;
+            }
+        }
+
+        async function storeDataInGoogleSheets(apiEndpoint, participantId, mobile) {
+            try {
+                await fetch(apiEndpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ participantId, mobile })
+                });
+            } catch (error) {
+                console.error("❌ Error storing data:", error);
+            }
+        }
     </script>
 
 </body>
