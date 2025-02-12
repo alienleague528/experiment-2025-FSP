@@ -8,22 +8,26 @@
         // Retrieve participant ID and mobile number from sessionStorage
         const participantId = sessionStorage.getItem("participantId");
         const mobile = sessionStorage.getItem("mobile");
-        const numericParticipantId = Number(participantId); 
 
         if (!participantId || !mobile) {
             alert("❌ Error: Missing data. Please start from Step 1.");
             window.location.href = "index.html"; // Redirect back if data is missing
         } else {
-            console.log("✅ Participant ID:", participantId);
-            console.log("✅ Mobile Number:", mobile);
+            console.log("✅ Participant ID (raw):", participantId);
+            console.log("🔍 Type of participantId:", typeof participantId);
 
-            // Decide which form to go to based on participantId
-            if (participantId % 2 === 0) {  
-                // If participant ID is even → Go to Form 2
-                window.location.href = `form2.html?participantId=${participantId}&mobile=${mobile}`;
+            // Convert to number to avoid issues
+            const numericParticipantId = Number(participantId);
+
+            console.log("🔢 Numeric Participant ID:", numericParticipantId);
+
+            // Decide which form to go to
+            if (numericParticipantId % 2 === 0) {  
+                console.log("✅ Redirecting to Form 2");
+                window.location.href = `form2.html?participantId=${numericParticipantId}&mobile=${mobile}`;
             } else {
-                // If participant ID is odd → Go to Form 3
-                window.location.href = `form3.html?participantId=${participantId}&mobile=${mobile}`;
+                console.log("✅ Redirecting to Form 3");
+                window.location.href = `form3.html?participantId=${numericParticipantId}&mobile=${mobile}`;
             }
         }
     </script>
