@@ -30,13 +30,6 @@
             padding: 0 20px;
         }
 
-        #tally-form {
-            margin-bottom: 20px;
-            width: 80%;
-            max-width: 800px;
-            height: 500px;
-        }
-
         .styled-button {
             background-color: #bb86fc;
             border: none;
@@ -48,50 +41,48 @@
             font-size: 16px;
             cursor: pointer;
             border-radius: 4px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
     <h1>Climate Study</h1>
-    <p>Thank you for your interest in our climate change study. Please fill out the form below. After completing the form, you will be redirected.</p>
+    <p>Thank you for your interest in our climate change study. Click the button below to proceed to the survey.</p>
 
-    <!-- Placeholder Tally form -->
-    <iframe id="tally-form" src="" frameborder="0"></iframe>
+    <!-- Button to open the Tally form -->
+    <a id="tally-link" href="#" target="_blank" class="styled-button">Open Survey</a>
 
     <script>
-        // ✅ Function to extract parameters from the URL
         function getURLParameters() {
-            var params = {};
-            var search = location.search.slice(1);
+            let params = {};
+            let search = location.search.slice(1);
             if (search) {
-                search.split('&').forEach(function(part) {
-                    var item = part.split('=');
+                search.split('&').forEach(part => {
+                    let item = part.split('=');
                     params[item[0]] = decodeURIComponent(item[1] || '');
                 });
             }
             return params;
         }
 
-        // ✅ Extract parameters on page load
         window.onload = function() {
-            var urlParams = getURLParameters();
+            let urlParams = getURLParameters();
 
-            var participantId = urlParams.participantId;
-            var mobile = urlParams.mobile;
-            var condition = participantId % 2 === 0 ? "positive" : "negative";
+            // Ensure participantId and mobile are always defined
+            let participantId = urlParams.participantId || "MISSING";
+            let mobile = urlParams.mobile || "MISSING";
 
-            console.log("🔢 Participant ID:", participantId);
-            console.log("📱 Mobile:", mobile);
-            console.log("🟢 Condition:", condition);
+            if (participantId === "MISSING") {
+                alert("❌ Error: Missing Participant ID. Please check the link.");
+                return;
+            }
 
-            // ✅ Assign different forms based on participant ID (even/odd)
-            var positiveForm = "https://tally.so/r/mVb2V6"; // Positive condition
-            var negativeForm = "https://tally.so/r/nGq8Je"; // Negative condition
-            var selectedForm = (condition === "positive") ? positiveForm : negativeForm;
+            // ✅ Directly open form1,5.html (let the form handle conditions)
+            let formUrl = `form1,5.html?participantId=${participantId}&mobile=${encodeURIComponent(mobile)}`;
 
-            // ✅ Update the iframe with the correct form URL
-            document.getElementById('tally-form').src = `${selectedForm}?participantId=${participantId}&mobile=${encodeURIComponent(mobile)}`;
+            // ✅ Update button link
+            document.getElementById("tally-link").href = formUrl;
         };
     </script>
 
