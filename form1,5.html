@@ -4,28 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecting...</title>
-    <script>
-        window.onload = function() {
-            // ✅ Retrieve participantId and mobile from sessionStorage
-            let participantId = sessionStorage.getItem("participantId") || "MISSING";
-            let mobile = sessionStorage.getItem("mobile") || "MISSING";
+<script>
+    // Retrieve participant ID and mobile number
+    const participantId = sessionStorage.getItem("participantId");
+    const mobile = sessionStorage.getItem("mobile");
 
-            if (participantId === "MISSING") {
-                alert("❌ Error: Missing Participant ID. Please check your entry.");
-                return;
-            }
+    if (!participantId || !mobile) {
+        alert("❌ Error: Missing data. Please start from Step 1.");
+        window.location.href = "index.html"; // Redirect back if data is missing
+    } else {
+        console.log("✅ Participant ID:", participantId);
+        console.log("✅ Mobile Number:", mobile);
 
-            // ✅ Define URLs
-            const tallyForm2 = "https://tally.so/r/mVb2V6"; // Positive condition
-            const tallyForm3 = "https://tally.so/r/nGq8Je"; // Negative condition
+        // Redirect to Form 2 after clicking next
+        document.getElementById("next-button").addEventListener("click", function() {
+            window.location.href = `form2.html?participantId=${participantId}&mobile=${mobile}`;
+        });
+    }
+</script>
 
-            // ✅ Determine which form to redirect to
-            const nextForm = (participantId % 2 === 0) ? tallyForm2 : tallyForm3;
-
-            // ✅ Redirect with participantId and mobile
-            window.location.href = `${nextForm}?participantId=${participantId}&mobile=${encodeURIComponent(mobile)}`;
-        };
-    </script>
 </head>
 <body>
     <h1>Redirecting...</h1>
