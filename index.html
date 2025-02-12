@@ -75,12 +75,12 @@
 
                 await storeDataInGoogleSheets(apiEndpoint, participantId, mobile);
 
-                // ✅ Store data in sessionStorage
+                // ✅ Store data in sessionStorage for later use
                 sessionStorage.setItem("participantId", participantId);
                 sessionStorage.setItem("mobile", mobile);
 
-                // ✅ Redirect to Form 1 (Tally Form)
-                window.location.href = `https://tally.so/r/wd8GjV?returnUrl=form1,5.html`;
+                // ✅ Redirect to Tally Form 1 (which should redirect to Form 1.5)
+                window.location.href = `https://tally.so/r/wd8GjV`;
             } catch (error) {
                 console.error("❌ Error:", error);
             }
