@@ -79,12 +79,14 @@
     </form>
 
 <script>
-    const apiEndpoint = "https://script.google.com/macros/s/AKfycbxZGCvszzP9rsvtVh-ulqAfE_sQx1GJ5FPAZhcS1uRkkVsfSYDs0zRAvH_K3j0sprCF/exec?action=getLastId"; // Replace with your actual API URL
+    // ✅ Separate API Endpoints for GET and POST actions
+    const apiGetLastId = "https://script.google.com/macros/s/AKfycbxZGCvszzP9rsvtVh-ulqAfE_sQx1GJ5FPAZhcS1uRkkVsfSYDs0zRAvH_K3j0sprCF/exec?action=getLastId"; 
+    const apiSaveData = "https://script.google.com/macros/s/AKfycbxZGCvszzP9rsvtVh-ulqAfE_sQx1GJ5FPAZhcS1uRkkVsfSYDs0zRAvH_K3j0sprCF/exec?action=saveData"; 
 
     document.getElementById('additionalInfoForm').addEventListener('submit', async function(event) {
         event.preventDefault();
         
-        const mobile = document.getElementById('mobile').value;
+        const mobile = document.getElementById('mobile').value.trim();
         if (!mobile) {
             alert("❌ Please enter your mobile number.");
             return;
@@ -92,57 +94,58 @@
 
         try {
             console.log("📢 Getting last participant ID...");
-            const lastParticipantId = await getLastParticipantId(apiEndpoint);
+            const lastParticipantId = await getLastParticipantId(apiGetLastId);
             const participantId = lastParticipantId + 1;
             console.log(`🔢 Assigned Participant ID: ${participantId}`);
 
-            // Determine form URL based on odd/even participantId
+            // ✅ Determine form URL based on odd/even participantId
             const tallyForm2 = "https://tally.so/r/mVb2V6"; // Positive condition
             const tallyForm3 = "https://tally.so/r/nGq8Je"; // Negative condition
             const nextForm = (participantId % 2 === 0) ? tallyForm2 : tallyForm3;
-            console.log("Redirecting to:", nextForm);
+            console.log("✅ Redirecting to:", nextForm);
 
-            // Save participant ID and mobile number
-            await storeDataInGoogleSheets(apiEndpoint, participantId, mobile);
+            // ✅ Save participant ID and mobile number
+            await storeDataInGoogleSheets(apiSaveData, participantId, mobile);
             
-            // Redirect with parameters
+            // ✅ Redirect with parameters
             window.location.href = `${nextForm}?participantId=${participantId}&mobile=${encodeURIComponent(mobile)}`;
         } catch (error) {
             console.error("❌ Error:", error);
         }
     });
 
-    async function getLastParticipantId(apiEndpoint) {
+    async function getLastParticipantId(apiUrl) {
         try {
-            const url = `${apiEndpoint}?action=getLastId`;
-            console.log("🔄 Requesting:", url);
+            console.log("🔄 Requesting last ID from:", apiUrl);
 
-            const response = await fetch(url, { method: "GET", headers: { "Content-Type": "application/json" } });
+            const response = await fetch(apiUrl, { method: "GET", headers: { "Content-Type": "application/json" } });
             const text = await response.text();
             console.log("📝 Raw response:", text);
 
             const data = JSON.parse(text);
             console.log("✅ Parsed API Response:", data);
-            return Number(data.lastParticipantId) || 0;
+
+            return Number(data.lastParticipantId) || 0; // ✅ Default to 0 if empty
         } catch (error) {
             console.error("❌ Error fetching last participant ID:", error);
             return 0;
         }
     }
 
-    async function storeDataInGoogleSheets(apiEndpoint, participantId, mobile) {
+    async function storeDataInGoogleSheets(apiUrl, participantId, mobile) {
         try {
-            const response = await fetch(apiEndpoint, {
+            console.log("📤 Sending data to Google Sheets...");
+            const response = await fetch(apiUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ participantId, mobile })
             });
-            
+
             const text = await response.text();
             console.log("📝 Raw response:", text);
             
             const result = JSON.parse(text);
-            console.log("✅ Data saved:", result);
+            console.log("✅ Data saved successfully:", result);
         } catch (error) {
             console.error("❌ Error storing data:", error);
         }
