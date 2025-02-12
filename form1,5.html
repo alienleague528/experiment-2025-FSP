@@ -4,25 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecting...</title>
-<script>
-    // Retrieve participant ID and mobile number
-    const participantId = sessionStorage.getItem("participantId");
-    const mobile = sessionStorage.getItem("mobile");
+    <script>
+        // Retrieve participant ID and mobile number from sessionStorage
+        const participantId = sessionStorage.getItem("participantId");
+        const mobile = sessionStorage.getItem("mobile");
 
-    if (!participantId || !mobile) {
-        alert("❌ Error: Missing data. Please start from Step 1.");
-        window.location.href = "index.html"; // Redirect back if data is missing
-    } else {
-        console.log("✅ Participant ID:", participantId);
-        console.log("✅ Mobile Number:", mobile);
+        if (!participantId || !mobile) {
+            alert("❌ Error: Missing data. Please start from Step 1.");
+            window.location.href = "index.html"; // Redirect back if data is missing
+        } else {
+            console.log("✅ Participant ID:", participantId);
+            console.log("✅ Mobile Number:", mobile);
 
-        // Redirect to Form 2 after clicking next
-        document.getElementById("next-button").addEventListener("click", function() {
-            window.location.href = `form2.html?participantId=${participantId}&mobile=${mobile}`;
-        });
-    }
-</script>
-
+            // Decide which form to go to based on participantId
+            if (participantId % 2 === 0) {  
+                // If participant ID is even → Go to Form 2
+                window.location.href = `form2.html?participantId=${participantId}&mobile=${mobile}`;
+            } else {
+                // If participant ID is odd → Go to Form 3
+                window.location.href = `form3.html?participantId=${participantId}&mobile=${mobile}`;
+            }
+        }
+    </script>
 </head>
 <body>
     <h1>Redirecting...</h1>
