@@ -4,33 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecting...</title>
-    <script>
-        // Retrieve participant ID and mobile number from sessionStorage
-        const participantId = sessionStorage.getItem("participantId");
-        const mobile = sessionStorage.getItem("mobile");
+<script>
+    // Retrieve participant ID and mobile number from sessionStorage
+    const participantId = sessionStorage.getItem("participantId");
+    const mobile = sessionStorage.getItem("mobile");
 
-        if (!participantId || !mobile) {
-            alert("❌ Error: Missing data. Please start from Step 1.");
-            window.location.href = "index.html"; // Redirect back if data is missing
+    if (!participantId || !mobile) {
+        alert("❌ Error: Missing data. Please start from Step 1.");
+        window.location.href = "index.html"; // Redirect back if data is missing
+    } else {
+        console.log("✅ Participant ID:", participantId);
+        console.log("✅ Mobile Number:", mobile);
+
+        // ✅ Decide whether to go to Form 2 or Form 3
+        if (participantId % 2 === 0) { 
+            // If the participant ID is even, go to Form 2
+            window.location.href = `form2.html?participantId=${participantId}&mobile=${mobile}`;
         } else {
-            console.log("✅ Participant ID (raw):", participantId);
-            console.log("🔍 Type of participantId:", typeof participantId);
-
-            // Convert to number to avoid issues
-            const numericParticipantId = Number(participantId);
-
-            console.log("🔢 Numeric Participant ID:", numericParticipantId);
-
-            // Decide which form to go to
-            if (numericParticipantId % 2 === 0) {  
-                console.log("✅ Redirecting to Form 2");
-                window.location.href = `form2.html?participantId=${numericParticipantId}&mobile=${mobile}`;
-            } else {
-                console.log("✅ Redirecting to Form 3");
-                window.location.href = `form3.html?participantId=${numericParticipantId}&mobile=${mobile}`;
-            }
+            // If the participant ID is odd, go to Form 3
+            window.location.href = `form3.html?participantId=${participantId}&mobile=${mobile}`;
         }
-    </script>
+    }
+</script>
+
 </head>
 <body>
     <h1>Redirecting...</h1>
