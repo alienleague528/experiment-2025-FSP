@@ -8,6 +8,7 @@
         // Retrieve participant ID and mobile number from sessionStorage
         const participantId = sessionStorage.getItem("participantId");
         const mobile = sessionStorage.getItem("mobile");
+        const numericParticipantId = Number(participantId); 
 
         if (!participantId || !mobile) {
             alert("❌ Error: Missing data. Please start from Step 1.");
