@@ -3,154 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thank You - Additional Information</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bookerly&display=swap');
+    <title>Redirecting...</title>
+    <script>
+        window.onload = function() {
+            // ✅ Retrieve participantId and mobile from sessionStorage
+            let participantId = sessionStorage.getItem("participantId") || "MISSING";
+            let mobile = sessionStorage.getItem("mobile") || "MISSING";
 
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: 'Bookerly', serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-            flex-direction: column;
-        }
+            if (participantId === "MISSING") {
+                alert("❌ Error: Missing Participant ID. Please check your entry.");
+                return;
+            }
 
-        h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-
-        p {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-        }
-
-        form {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        label {
-            font-size: 1.2em;
-        }
-
-        input {
-            padding: 10px;
-            font-size: 1em;
-            border: none;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-
-        button {
-            background-color: #1DB954;
-            color: white;
-            font-size: 1.2em;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-
-        button:hover {
-            background-color: #1AA34A;
-        }
-    </style>
-</head>
-<body>
-
-    <h1>Thank You!</h1>
-    <p>Please enter your mobile number below again to proceed:</p>
-
-    <form id="additionalInfoForm">
-        <label for="mobile">Mobile Number:</label>
-        <input type="tel" id="mobile" name="mobile" required><br><br>
-        <button type="submit">Submit</button>
-    </form>
-
-<script>
-    // ✅ Separate API Endpoints for GET and POST actions
-    const apiGetLastId = "https://script.google.com/macros/s/AKfycbxZGCvszzP9rsvtVh-ulqAfE_sQx1GJ5FPAZhcS1uRkkVsfSYDs0zRAvH_K3j0sprCF/exec?action=getLastId"; 
-    const apiSaveData = "https://script.google.com/macros/s/AKfycbxZGCvszzP9rsvtVh-ulqAfE_sQx1GJ5FPAZhcS1uRkkVsfSYDs0zRAvH_K3j0sprCF/exec?action=saveData"; 
-
-    document.getElementById('additionalInfoForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        
-        const mobile = document.getElementById('mobile').value.trim();
-        if (!mobile) {
-            alert("❌ Please enter your mobile number.");
-            return;
-        }
-
-        try {
-            console.log("📢 Getting last participant ID...");
-            const lastParticipantId = await getLastParticipantId(apiGetLastId);
-            const participantId = lastParticipantId + 1;
-            console.log(`🔢 Assigned Participant ID: ${participantId}`);
-
-            // ✅ Determine form URL based on odd/even participantId
+            // ✅ Define URLs
             const tallyForm2 = "https://tally.so/r/mVb2V6"; // Positive condition
             const tallyForm3 = "https://tally.so/r/nGq8Je"; // Negative condition
+
+            // ✅ Determine which form to redirect to
             const nextForm = (participantId % 2 === 0) ? tallyForm2 : tallyForm3;
-            console.log("✅ Redirecting to:", nextForm);
 
-            // ✅ Save participant ID and mobile number
-            await storeDataInGoogleSheets(apiSaveData, participantId, mobile);
-            
-            // ✅ Redirect with parameters
+            // ✅ Redirect with participantId and mobile
             window.location.href = `${nextForm}?participantId=${participantId}&mobile=${encodeURIComponent(mobile)}`;
-        } catch (error) {
-            console.error("❌ Error:", error);
-        }
-    });
-
-    async function getLastParticipantId(apiUrl) {
-        try {
-            console.log("🔄 Requesting last ID from:", apiUrl);
-
-            const response = await fetch(apiUrl, { method: "GET", headers: { "Content-Type": "application/json" } });
-            const text = await response.text();
-            console.log("📝 Raw response:", text);
-
-            const data = JSON.parse(text);
-            console.log("✅ Parsed API Response:", data);
-
-            return Number(data.lastParticipantId) || 0; // ✅ Default to 0 if empty
-        } catch (error) {
-            console.error("❌ Error fetching last participant ID:", error);
-            return 0;
-        }
-    }
-
-    async function storeDataInGoogleSheets(apiUrl, participantId, mobile) {
-        try {
-            console.log("📤 Sending data to Google Sheets...");
-            const response = await fetch(apiUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ participantId, mobile })
-            });
-
-            const text = await response.text();
-            console.log("📝 Raw response:", text);
-            
-            const result = JSON.parse(text);
-            console.log("✅ Data saved successfully:", result);
-        } catch (error) {
-            console.error("❌ Error storing data:", error);
-        }
-    }
-</script>
-
+        };
+    </script>
+</head>
+<body>
+    <h1>Redirecting...</h1>
 </body>
 </html>
