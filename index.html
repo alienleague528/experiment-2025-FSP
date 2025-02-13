@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Your Login Details</title>
+  <title>Experiment 2025 FSP</title>
   <script>
     // Extract email and password from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
@@ -10,15 +10,21 @@
 
     // Display the details on the page
     window.onload = function() {
-      document.getElementById('email').innerText = email;
-      document.getElementById('password').innerText = password;
+      if (email && password) {
+        document.getElementById('email').innerText = email;
+        document.getElementById('password').innerText = password;
+      } else {
+        document.getElementById('message').innerText = "No login details found.";
+      }
     };
   </script>
 </head>
 <body>
-  <h1>Your Login Details</h1>
-  <p>Email: <span id="email"></span></p>
-  <p>Password: <span id="password"></span></p>
+  <h1>Welcome to the Experiment</h1>
+  <div id="message">
+    <p>Email: <span id="email"></span></p>
+    <p>Password: <span id="password"></span></p>
+  </div>
   <p>Please keep this information secure.</p>
 </body>
 </html>
