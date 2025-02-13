@@ -1,114 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Participant Information</title>
-    <style>
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-        }
+  <title>Your Login Details</title>
+  <script>
+    // Extract email and password from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    const password = urlParams.get('password');
 
-        form {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        label, input {
-            font-size: 1.2em;
-            margin: 10px 0;
-        }
-
-        button {
-            background-color: #1DB954;
-            color: white;
-            padding: 10px 20px;
-            font-size: 1.2em;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #1AA34A;
-        }
-    </style>
+    // Display the details on the page
+    window.onload = function() {
+      document.getElementById('email').innerText = email;
+      document.getElementById('password').innerText = password;
+    };
+  </script>
 </head>
 <body>
-
-    <h1>Step 1: Enter Your Information</h1>
-
-    <form id="participantForm">
-        <label for="mobile">Mobile Number:</label>
-        <input type="tel" id="mobile" name="mobile" required>
-        <button type="submit">Submit</button>
-    </form>
-
-    <script>
-        const apiEndpoint = "https://script.google.com/macros/s/AKfycbxZGCvszzP9rsvtVh-ulqAfE_sQx1GJ5FPAZhcS1uRkkVsfSYDs0zRAvH_K3j0sprCF/exec?action=getLastId";
-
-        document.getElementById('participantForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const mobile = document.getElementById('mobile').value;
-            if (!mobile) {
-                alert("❌ Please enter your mobile number.");
-                return;
-            }
-
-            try {
-                console.log("📢 Getting last participant ID...");
-                const lastParticipantId = await getLastParticipantId(apiEndpoint);
-                const participantId = lastParticipantId + 1;
-                console.log(`🔢 Assigned Participant ID: ${participantId}`);
-
-                await storeDataInGoogleSheets(apiEndpoint, participantId, mobile);
-
-                // ✅ Store data in sessionStorage for later use
-                sessionStorage.setItem("participantId", participantId);
-                sessionStorage.setItem("mobile", mobile);
-
-                // ✅ Redirect to Tally Form 1 (which should redirect to Form 1.5)
-                window.location.href = `https://tally.so/r/wd8GjV`;
-            } catch (error) {
-                console.error("❌ Error:", error);
-            }
-        });
-
-        async function getLastParticipantId(apiEndpoint) {
-            try {
-                const response = await fetch(apiEndpoint, { method: "GET", headers: { "Content-Type": "application/json" } });
-                const data = await response.json();
-                return Number(data.lastParticipantId) || 0;
-            } catch (error) {
-                console.error("❌ Error fetching last participant ID:", error);
-                return 0;
-            }
-        }
-
-        async function storeDataInGoogleSheets(apiEndpoint, participantId, mobile) {
-            try {
-                await fetch(apiEndpoint, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ participantId, mobile })
-                });
-            } catch (error) {
-                console.error("❌ Error storing data:", error);
-            }
-        }
-    </script>
-
+  <h1>Your Login Details</h1>
+  <p>Email: <span id="email"></span></p>
+  <p>Password: <span id="password"></span></p>
+  <p>Please keep this information secure.</p>
 </body>
 </html>
