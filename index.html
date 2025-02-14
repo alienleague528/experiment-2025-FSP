@@ -3,28 +3,23 @@
 <head>
   <title>Experiment 2025 FSP</title>
   <script>
-    // Extract email and password from URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get('email');
-    const password = urlParams.get('password');
+  // Get ID from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const participantId = urlParams.get('id');
+  
+  // Display the ID on the page
+  if (participantId) {
+    document.getElementById('participant-id').textContent = participantId;
+  }
 
-    // Display the details on the page
-    window.onload = function() {
-      if (email && password) {
-        document.getElementById('email').innerText = email;
-        document.getElementById('password').innerText = password;
-      } else {
-        document.getElementById('message').innerText = "No login details found.";
-      }
-    };
+<p>Your Participant ID is: <span id="participant-id"></span></p>
   </script>
 </head>
 <body>
   <h1>Welcome to the Experiment</h1>
   <div id="message">
-    <p>Email: <span id="email"></span></p>
-    <p>Password: <span id="password"></span></p>
   </div>
   <p>Please keep this information secure.</p>
 </body>
 </html>
+
