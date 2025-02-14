@@ -3,23 +3,25 @@
 <head>
   <title>Experiment 2025 FSP</title>
   <script>
-  // Get ID from URL parameters
-  const urlParams = new URLSearchParams(window.location.search);
-  const participantId = urlParams.get('id');
-  
-  // Display the ID on the page
-  if (participantId) {
-    document.getElementById('participant-id').textContent = participantId;
-  }
+    // Extract participant ID from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const participantId = urlParams.get('id');
 
-<p>Your Participant ID is: <span id="participant-id"></span></p>
+    // Display the participant ID on the page
+    window.onload = function() {
+      if (participantId) {
+        document.getElementById('participant-id').innerText = participantId;
+      } else {
+        document.getElementById('message').innerText = "No participant ID found.";
+      }
+    };
   </script>
 </head>
 <body>
   <h1>Welcome to the Experiment</h1>
   <div id="message">
+    <p>Your Participant ID: <span id="participant-id"></span></p>
   </div>
   <p>Please keep this information secure.</p>
 </body>
 </html>
-
